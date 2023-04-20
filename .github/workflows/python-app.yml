@@ -11,7 +11,7 @@ permissions:
 
 env:
   HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
-  HEROKU_APP_NAME: https://git.heroku.com/chatgpt---slack.git
+  HEROKU_APP_NAME: "chatgpt---slack"
 
 jobs:
   build:
@@ -35,13 +35,12 @@ jobs:
         # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
         flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
     - name: Deploy to Heroku
-      uses: akhileshns/heroku-deploy@v3.12.12
+      uses: akhileshns/heroku-deploy@v3.12.14
       with:
         heroku_api_key: ${{ env.HEROKU_API_KEY }}
         heroku_app_name: ${{ env.HEROKU_APP_NAME }}
         heroku_email: "esteban030990@gmail.com"
         branch: "master"
-        extra_arguments: "--force-ssl" # Agrega esta línea si deseas forzar la conexión SSL
       env:
         SLACK_APP_TOKEN: ${{ secrets.SLACK_APP_TOKEN }}
         SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
