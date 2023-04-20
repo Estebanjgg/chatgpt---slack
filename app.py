@@ -5,6 +5,7 @@ from dotenv import load_dotenv
 import openai
 from slack_bolt import App
 from slack_bolt.adapter.socket_mode import SocketModeHandler
+from slack_sdk import WebClient
 
 load_dotenv()
 
@@ -15,13 +16,18 @@ app = App(token=SLACK_BOT_TOKEN)
 
 openai.api_key = os.environ["OPENAI_API_KEY"]
 
+def get_bot_user_id(app_token):
+    client = WebClient(token=app_token)
+    response = client.auth_test()
+    return response["user_id"]
+
+BOT_USER_ID = get_bot_user_id(SLACK_APP_TOKEN)
 
 def generate_summary(text, length=100):
     return process_openai_response(
         prompt=f"Resumen en {length} palabras: {text}",
         max_tokens=length
     )
-
 
 def process_openai_response(prompt, max_tokens):
     response = openai.Completion.create(
@@ -35,7 +41,6 @@ def process_openai_response(prompt, max_tokens):
     )
     return response.choices[0].text.strip()
 
-
 def handle_schedule_meeting(text):
     match = re.search(r"\d{1,2}:\d{2}(\s?[apAP]\.?[mM]\.?)?", text)
     if match:
@@ -48,7 +53,6 @@ def handle_schedule_meeting(text):
     else:
         return "No encontré una hora en tu mensaje. Por favor, incluye la hora de la reunión."
 
-
 def handle_generate_summary(text):
     match = re.search(r"resum(?:e|ir|en)\s+(.+)", text, re.IGNORECASE)
     if match:
@@ -57,17 +61,16 @@ def handle_generate_summary(text):
     else:
         return "No encontré texto para resumir. Por favor, proporciona el texto que deseas resumir."
 
-
 def handle_other_query(text):
     prompt = f"Tengo una pregunta: {text}"
     return process_openai_response(prompt, max_tokens=50)
 
-
 @app.event("app_mention")
 def command_handler(body, say):
     text = body["event"]["text"]
+    user_id = body["event"]["user"]
 
-    if not body["event"].get("bot_id"):
+    if user_id != BOT_USER_ID and not body["event"].get("bot_id"):
         if re.search(r"programa(?:r|dme)?\s+una\s+reuni[oó]n", text, re.IGNORECASE):
             response_text = handle_schedule_meeting(text)
         elif re.search(r"resum(?:e|ir|en)", text, re.IGNORECASE):
@@ -76,7 +79,6 @@ def command_handler(body, say):
             response_text = handle_other_query(text)
 
         say(response_text)
-
 
 if __name__ == "__main__":
     handler = SocketModeHandler(app, SLACK_APP_TOKEN)
