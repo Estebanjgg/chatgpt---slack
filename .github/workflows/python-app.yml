@@ -40,7 +40,7 @@ jobs:
         heroku_api_key: ${{ secrets.HEROKU_API_KEY }}
         heroku_app_name: ${{ secrets.HEROKU_APP_NAME }}
         heroku_email: "tu_email"
-        branch: "main"
+        branch: "master"
         extra_arguments: "--force-ssl"
       env:
         SLACK_APP_TOKEN: ${{ secrets.SLACK_APP_TOKEN }}
