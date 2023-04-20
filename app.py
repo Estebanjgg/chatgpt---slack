@@ -17,10 +17,17 @@ openai.api_key = os.environ["OPENAI_API_KEY"]
 
 
 def generate_summary(text, length=100):
+    return process_openai_response(
+        prompt=f"Resumen en {length} palabras: {text}",
+        max_tokens=length
+    )
+
+
+def process_openai_response(prompt, max_tokens):
     response = openai.Completion.create(
         engine="text-davinci-002",
-        prompt=f"Resumen en {length} palabras: {text}",
-        max_tokens=length,
+        prompt=prompt,
+        max_tokens=max_tokens,
         n=1,
         stop=None,
         temperature=0.5,
@@ -29,46 +36,44 @@ def generate_summary(text, length=100):
     return response.choices[0].text.strip()
 
 
+def handle_schedule_meeting(text):
+    match = re.search(r"\d{1,2}:\d{2}(\s?[apAP]\.?[mM]\.?)?", text)
+    if match:
+        time_str = match.group()
+        parsed_date = parse_date(time_str)
+        if parsed_date:
+            return f"Reunión programada para las {parsed_date.strftime('%I:%M %p')}."
+        else:
+            return "Lo siento, no pude entender la hora que proporcionaste."
+    else:
+        return "No encontré una hora en tu mensaje. Por favor, incluye la hora de la reunión."
+
+
+def handle_generate_summary(text):
+    match = re.search(r"resum(?:e|ir|en)\s+(.+)", text, re.IGNORECASE)
+    if match:
+        summary_text = match.group(1)
+        return generate_summary(summary_text)
+    else:
+        return "No encontré texto para resumir. Por favor, proporciona el texto que deseas resumir."
+
+
+def handle_other_query(text):
+    prompt = f"Tengo una pregunta: {text}"
+    return process_openai_response(prompt, max_tokens=50)
+
+
 @app.event("app_mention")
 def command_handler(body, say):
     text = body["event"]["text"]
 
     if not body["event"].get("bot_id"):
-        # Programar reunión
         if re.search(r"programa(?:r|dme)?\s+una\s+reuni[oó]n", text, re.IGNORECASE):
-            match = re.search(r"\d{1,2}:\d{2}(\s?[apAP]\.?[mM]\.?)?", text)
-            if match:
-                time_str = match.group()
-                parsed_date = parse_date(time_str)
-                if parsed_date:
-                    response_text = f"Reunión programada para las {parsed_date.strftime('%I:%M %p')}."
-                else:
-                    response_text = "Lo siento, no pude entender la hora que proporcionaste."
-            else:
-                response_text = "No encontré una hora en tu mensaje. Por favor, incluye la hora de la reunión."
-
-        # Generar resumen
+            response_text = handle_schedule_meeting(text)
         elif re.search(r"resum(?:e|ir|en)", text, re.IGNORECASE):
-            match = re.search(r"resum(?:e|ir|en)\s+(.+)", text, re.IGNORECASE)
-            if match:
-                summary_text = match.group(1)
-                response_text = generate_summary(summary_text)
-            else:
-                response_text = "No encontré texto para resumir. Por favor, proporciona el texto que deseas resumir."
-
-        # Consultas y generación de texto en varios idiomas
+            response_text = handle_generate_summary(text)
         else:
-            prompt = f"Tengo una pregunta: {text}"
-            response = openai.Completion.create(
-                engine="text-davinci-002",
-                prompt=prompt,
-                max_tokens=50,
-                n=1,
-                stop=None,
-                temperature=0.3,
-                top_p=1,
-            )
-            response_text = response.choices[0].text.strip()
+            response_text = handle_other_query(text)
 
         say(response_text)
 
