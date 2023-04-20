@@ -59,3 +59,9 @@ typings/
 .yarn-integrity
 
 .env
+
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+venv/
