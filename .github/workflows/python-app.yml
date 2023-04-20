@@ -11,7 +11,7 @@ permissions:
 
 env:
   HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
-  HEROKU_APP_NAME: "fast-cliffs-22541"
+  HEROKU_APP_NAME: "chatgpt---slack"
 
 jobs:
   build:
