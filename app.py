@@ -32,7 +32,7 @@ def generate_summary(text, length=100):
 
 def process_openai_response(prompt, max_tokens, language="en"):
     response = openai.Completion.create(
-        engine=f"text-davinci-002-{language}",
+        engine="davinci",
         prompt=prompt,
         max_tokens=max_tokens,
         n=1,
