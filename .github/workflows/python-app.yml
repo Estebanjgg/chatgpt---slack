@@ -1,9 +1,7 @@
-name: Python application
+name: Deploy to Heroku
 
 on:
   push:
-    branches: [ "master" ]
-  pull_request:
     branches: [ "master" ]
 
 permissions:
@@ -11,7 +9,7 @@ permissions:
 
 env:
   HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
-  HEROKU_APP_NAME: "chatgpt---slack"
+  HEROKU_APP_NAME: "chatgpt---slack" # Reemplaza con el nombre de tu aplicación en Heroku
 
 jobs:
   build:
@@ -26,22 +24,14 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install flake8
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-    - name: Lint with flake8
-      run: |
-        # stop the build if there are Python syntax errors or undefined names
-        flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
-        # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
-        flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
     - name: Deploy to Heroku
       uses: akhileshns/heroku-deploy@v3.12.13 # Cambiar a la última versión existente
       with:
         heroku_api_key: ${{ secrets.HEROKU_API_KEY }}
-        heroku_app_name: ${{ secrets.HEROKU_APP_NAME }}
-        heroku_email: "tu_email"
-        branch: "master"
-        extra_arguments: "--force-ssl"
+        heroku_app_name: ${{ env.HEROKU_APP_NAME }}
+        heroku_email: "esteban030990@gmail.com" # Reemplaza con tu dirección de correo electrónico
+        usedocker: true # Esto habilita el uso de Docker
       env:
         SLACK_APP_TOKEN: ${{ secrets.SLACK_APP_TOKEN }}
         SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
