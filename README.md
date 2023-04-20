@@ -29,6 +29,31 @@ pip install -r requirements.txt
 3. Configura tus tokens de API en el archivo `.env`. Reemplaza `YOUR_SLACK_APP_TOKEN` y `YOUR_SLACK_BOT_TOKEN` con los tokens de tu aplicación de Slack, y `YOUR_OPENAI_API_KEY` con tu clave API de ChatGPT 3.5.
 
 
+## Ejecución en Docker
+
+Este proyecto también se puede ejecutar en un contenedor Docker. A continuación, te mostramos los pasos para hacerlo:
+
+### Requisitos previos
+
+- Docker instalado en tu sistema. Si aún no lo has hecho, descarga e instala Docker desde [este enlace](https://docs.docker.com/get-docker/).
+
+### Instalación y uso
+1. Construye la imagen Docker con el siguiente comando:
+```bash
+docker build -t chatgpt-slackbot .
+```
+Esto creará una imagen de Docker con el nombre chatgpt-slackbot.
+
+2. Ejecuta el contenedor Docker con el siguiente comando:
+```bash
+docker run --env-file .env chatgpt-slackbot
+```
+Esto iniciará el contenedor y leerá las variables de entorno del archivo .env. Ahora, tu proyecto debería estar ejecutándose dentro del contenedor Docker con todas las dependencias instaladas.
+
+Recuerda que necesitarás compartir tu archivo .env con el contenedor para que tenga acceso a tus tokens de API y clave de API de OpenAI. El comando anterior hace precisamente eso al utilizar la opción --env-file .env.
+
+Una vez que el contenedor esté en ejecución, puedes seguir los pasos de la sección "Uso" para interactuar con el bot de Slack.
+
 ## Uso
 
 1. Ejecuta el bot:
