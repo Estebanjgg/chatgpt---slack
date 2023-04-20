@@ -26,7 +26,7 @@ jobs:
         python -m pip install --upgrade pip
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
     - name: Deploy to Heroku
-      uses: akhileshns/heroku-deploy@v3.12.13 # Cambiar a la última versión existente
+      uses: akhileshns/heroku-deploy@v3.12.13 
       with:
         heroku_api_key: ${{ secrets.HEROKU_API_KEY }}
         heroku_app_name: ${{ env.HEROKU_APP_NAME }}
