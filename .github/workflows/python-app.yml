@@ -30,8 +30,7 @@ jobs:
       with:
         heroku_api_key: ${{ secrets.HEROKU_API_KEY }}
         heroku_app_name: ${{ env.HEROKU_APP_NAME }}
-        heroku_email: "esteban030990@gmail.com" # Reemplaza con tu dirección de correo electrónico
-        usedocker: true # Esto habilita el uso de Docker
+        heroku_email: "esteban030990@gmail.com" 
       env:
         SLACK_APP_TOKEN: ${{ secrets.SLACK_APP_TOKEN }}
         SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
