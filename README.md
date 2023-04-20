@@ -1,6 +1,6 @@
 # ChatGPT 3.5 Slack Bot
 
-Este proyecto integra el modelo de lenguaje ChatGPT 3.5 de OpenAI con Slack utilizando la biblioteca Slack Bolt para Python. El bot responde a preguntas y solicitudes en Slack, y también incluye funciones adicionales como programación de reuniones y generación de resúmenes.
+Este proyecto integra el modelo de lenguaje ChatGPT 3.5 de OpenAI con Slack utilizando la biblioteca Slack Bolt para Python. El bot responde a preguntas y solicitudes en Slack, y también incluye funciones adicionales como programación de reuniones y generación de resúmenes. **Ten en cuenta que este es solo un ejemplo y puede tener defectos o limitaciones en su funcionalidad**.
 
 ![maxresdefault](https://user-images.githubusercontent.com/91167097/233241085-c35d2a28-a65a-4934-abdb-ec0101327906.jpg)
 ![Slack_RGB](https://user-images.githubusercontent.com/91167097/233241097-a8d70d32-02fb-4ef5-a97b-2740253da391.png)
