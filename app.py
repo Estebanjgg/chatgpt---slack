@@ -26,12 +26,13 @@ BOT_USER_ID = get_bot_user_id(SLACK_APP_TOKEN)
 def generate_summary(text, length=100):
     return process_openai_response(
         prompt=f"Resumen en {length} palabras: {text}",
-        max_tokens=length
+        max_tokens=length,
+        language="es"
     )
 
-def process_openai_response(prompt, max_tokens):
+def process_openai_response(prompt, max_tokens, language="en"):
     response = openai.Completion.create(
-        engine="text-davinci-002",
+        engine=f"text-davinci-002-{language}",
         prompt=prompt,
         max_tokens=max_tokens,
         n=1,
@@ -57,13 +58,13 @@ def handle_generate_summary(text):
     match = re.search(r"resum(?:e|ir|en)\s+(.+)", text, re.IGNORECASE)
     if match:
         summary_text = match.group(1)
-        return generate_summary(summary_text)
+        return generate_summary(summary_text, length=100)
     else:
         return "No encontré texto para resumir. Por favor, proporciona el texto que deseas resumir."
 
 def handle_other_query(text):
     prompt = f"Tengo una pregunta: {text}"
-    return process_openai_response(prompt, max_tokens=50)
+    return process_openai_response(prompt, max_tokens=50, language="es")
 
 @app.event("app_mention")
 def command_handler(body, say):
