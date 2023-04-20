@@ -45,7 +45,7 @@ def process_openai_response(prompt, max_tokens, language="en"):
         max_tokens=max_tokens,
         n=1,
         stop=None,
-        temperature=0.5,
+        temperature=0.8,
         top_p=1,
     )
      # Devuelve la respuesta generada por el modelo
