@@ -69,16 +69,26 @@ def handle_other_query(text):
 def command_handler(body, say):
     text = body["event"]["text"]
     user_id = body["event"]["user"]
+    event_ts = body["event"]["event_ts"]
+    bot_response_sent = False
 
     if user_id != BOT_USER_ID and not body["event"].get("bot_id"):
         if re.search(r"programa(?:r|dme)?\s+una\s+reuni[oó]n", text, re.IGNORECASE):
             response_text = handle_schedule_meeting(text)
+            bot_response_sent = True
         elif re.search(r"resum(?:e|ir|en)", text, re.IGNORECASE):
             response_text = handle_generate_summary(text)
+            bot_response_sent = True
         else:
             response_text = handle_other_query(text)
+            bot_response_sent = True
 
-        say(response_text)
+        if bot_response_sent:
+            app.client.chat_postMessage(
+                channel=body["event"]["channel"],
+                text=response_text,
+                thread_ts=event_ts
+            )
 
 if __name__ == "__main__":
     handler = SocketModeHandler(app, SLACK_APP_TOKEN)
