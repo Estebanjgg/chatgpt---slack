@@ -34,7 +34,7 @@ pip install -r requirements.txt
 1. Ejecuta el bot:
 
 ```bash
-python main.py
+python app.py
 ```
 
 2. Invita al bot a un canal de Slack utilizando el comando `/invite @nombre_de_tu_bot`.
